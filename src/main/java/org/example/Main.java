@@ -1,17 +1,39 @@
 package org.example;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.time.LocalDate;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        Persona p1 = new Persona("Juan", "Pérez", LocalDate.of(1980, 1, 1), Sexo.HOMBRE, EstadoCivil.SOLTERO);
+        Persona p2 = new Persona("María", "Gómez", LocalDate.of(1985, 2, 2), Sexo.MUJER, EstadoCivil.CASADO);
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        var etf = PersonaJPAManager.getEntityManagerFactory(PersonaJPAManager.PERSONAS_H2);
+        var em = etf.createEntityManager();
+
+        // Persister as persoas
+        try {
+            em.getTransaction().begin();
+            em.persist(p1);
+            em.persist(p2);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            System.err.println("Erro ó gardar as persoas: " + e.getMessage());
+            em.getTransaction().rollback();
+        }
+
+
+        // Recuperar e ler as persoas da base de datos
+        try {
+            em.getTransaction().begin();
+            var query = em.createQuery("SELECT p FROM Persona p", Persona.class);
+            var persoas = query.getResultList();
+            em.getTransaction().commit();
+            for (Persona p : persoas) {
+                System.out.println(p);
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ó ler as persoas: " + e.getMessage());
+            em.getTransaction().rollback();
         }
     }
 }
