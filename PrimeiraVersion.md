@@ -1,18 +1,14 @@
+```java
 package org.example;
 
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
 @Entity
-// AccessType.FIELD indica que as columnas da tabla da BD se
-// farán a partir dos atributos da clase automáticamente
-// Con esta anotación non seria necesario indicarlle a anotacion
-// @Column a cada atributo, a non se que queiramos un nome diferente
-@Access(AccessType.FIELD)
+//@Access(AccessType.FIELD)
 public class Persona {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -42,18 +38,10 @@ public class Persona {
     @Convert(converter = SexoConverter.class)
     private Sexo sexo;
 
-    // Por defecto os valores das enumeracións
-    // gardanse como ORDINAL, que son números que indican a posición
-    // do valor da enumeración
-    // Esto é porque as enumeración non son tipos primitivos
-    // polo que hai que "procesalas" para gardalas
-    // Em este caso, gardanse como STRING
     @Enumerated(EnumType.STRING)
     private EstadoCivil estadoCivil;
 
     // Marcado como BLOB
-    // Indícalle a JPA que debe tratar este
-    // atributo como un obxecto de gran tamaño
     @Lob
     private byte[] foto;
 
@@ -88,17 +76,13 @@ public class Persona {
         updateNombreApellidos();
     }
 
+
     /*
-    Este é un exemplo de como crear unha columna
-    a partir dun getter nunha táboa onde se especificou
-    que se qieren crear as columnas a partir dos atributos
-    Basta con por Accestype.PROPERTY e indicar o nome da columna no getter
     @Access(AccessType.PROPERTY)
     @Column(name = "nombreCompleto")
-    */
     public String getNombreCompleto() {
         return nombreApellidos;
-    }
+    }*/
 
     public String getApellidos() {
         return apellidos;
@@ -173,30 +157,6 @@ public class Persona {
         }
     }
 
-
-    // Versión de clase
-    // El método marcado con @PostLoad se ejecuta automáticamente
-    // después de que la entidad haya sido cargada desde la base de datos,
-    // para usarla en el código
-    // En este caso, calcula la edad de la persona basada en su fecha de nacimiento.
-    /*
-    @PostLoad
-    public void updateEdad() {
-        if (fechaNacimiento != null) {
-            //Con ChronoUnit
-            edad = (int) ChronoUnit.YEARS.between(fechaNacimiento, LocalDate.now());
-            System.out.println("Edad: " + edad);
-
-            //Con temporal
-            edad = (int) fechaNacimiento.until(LocalDate.now(), ChronoUnit.YEARS);
-
-            //Con Period
-            edad = Period.between(fechaNacimiento, LocalDate.now()).getYears();
-        } else {
-            System.out.println(fechaNacimiento);
-        }
-    }*/
-
     @Override
     public String toString() {
         return "Persona{" +
@@ -212,3 +172,51 @@ public class Persona {
                 '}';
     }
 }
+
+```
+
+
+```java
+package org.example;
+
+public enum Sexo {
+    HOMBRE, MUJER;
+}
+
+```
+
+
+```java
+package org.example;
+
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
+
+@Converter(autoApply = true)
+class SexoConverter implements AttributeConverter<Sexo, Character> {
+
+    // Para convertilo na BD
+    @Override
+    public Character convertToDatabaseColumn(Sexo sexo) {
+        if (sexo == null) {
+            return null;
+        }
+        return sexo == Sexo.HOMBRE ? 'M' : 'F';
+    }
+
+    // Para convertilo en atributo dunha entidade
+    @Override
+    public Sexo convertToEntityAttribute(Character dbData) {
+        if (dbData == null) {
+            return null;
+        }
+        return dbData == 'M' ? Sexo.HOMBRE : Sexo.MUJER;
+    }
+}
+
+```
+
+
+
+nota: facer este exercicio:  Ejercicio 05.04. Generación de ids con tabla
+no link: https://manuais.pages.iessanclemente.net/plantillas/dam/ad/03orm/jpa/05mapeoentidades/index.html#103-generaci%C3%B3n-de-claves-primarias-generatedvalue

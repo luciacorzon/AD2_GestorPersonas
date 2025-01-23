@@ -9,8 +9,8 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>org.example.Persona</class>
         <properties>
-            <!--<property name="javax.persistence.jdbc.url" value="jdbc:h2:L:\AccesoADatos\Personas;DATABASE_TO_UPPER=FALSE;FILE_LOCK=NO;DB_CLOSE_DELAY=-1"/>-->
-            <property name="javax.persistence.jdbc.url" value="jdbc:h2:C:\Users\34649\Desktop\Personas;DATABASE_TO_UPPER=FALSE;FILE_LOCK=NO;DB_CLOSE_DELAY=-1"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:h2:L:\AccesoADatos\Personas;DATABASE_TO_UPPER=FALSE;FILE_LOCK=NO;DB_CLOSE_DELAY=-1"/>
+            <!--<property name="javax.persistence.jdbc.url" value="jdbc:h2:C:\Users\34649\Desktop\Personas;DATABASE_TO_UPPER=FALSE;FILE_LOCK=NO;DB_CLOSE_DELAY=-1"/>-->
             <property name="javax.persistence.jdbc.user" value=""/>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="javax.persistence.jdbc.password" value=""/>
