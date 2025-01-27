@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
 @Entity
@@ -15,8 +14,18 @@ import java.util.Arrays;
 @Access(AccessType.FIELD)
 public class Persona {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int idPersona;
+    // Para usar a tabla de ids hai que cambiar o strategy e generator
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "long_id_gen")
+    @TableGenerator(
+            name = "long_id_gen",
+            table = "LONG_ID_GEN",
+            pkColumnName = "nomePK",
+            valueColumnName = "valorPK",
+            pkColumnValue = "PERSONA_ID",
+            initialValue = 1000,
+            allocationSize = 100
+    )
+    private Long idPersona;
 
     // Nome e Apelidos como Transient para que se ignoren
     // e solo se añada a columna nombreApellidos que se crea a partir desos
@@ -71,11 +80,11 @@ public class Persona {
     }
 
     // Getters / setters
-    public int getIdPersona() {
+    public Long getIdPersona() {
         return idPersona;
     }
 
-    public void setIdPersona(int idPersona) {
+    public void setIdPersona(Long idPersona) {
         this.idPersona = idPersona;
     }
 
